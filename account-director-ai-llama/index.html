@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account Director AI — Hosted (Llama)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <!-- WebLLM -->
+  <script defer src="https://unpkg.com/@mlc-ai/web-llm@0.2.73/dist/index.min.js"></script>
+  <!-- PPTX -->
+  <script defer src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <!-- App -->
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="wordmark">Account Director AI</div>
+      </div>
+      <div class="header-actions">
+        <select id="modelSelect" class="select">
+          <option value="Llama-3.1-8B-Instruct-q4f16_1-MLC" selected>Llama‑3.1 8B (balanced)</option>
+          <option value="Phi-3-mini-4k-instruct-q4f16_1-MLC">Phi‑3 Mini (fast)</option>
+        </select>
+        <button id="initBtn" class="btn">Launch AI</button>
+        <span id="status" class="status">Idle</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <aside class="sidebar card">
+      <h3 class="section-title">Account Profile</h3>
+      <label class="lbl">Account Name <input id="accName" class="input" placeholder="e.g., Acme Corp"></label>
+      <label class="lbl">Context / Notes <textarea id="accContext" class="input" rows="4" placeholder="Key goals, recent events, stakeholders…"></textarea></label>
+      <label class="lbl">Key Contacts (comma emails) <input id="accContacts" class="input" placeholder="alex@acme.com, dana@acme.com"></label>
+      <label class="lbl">Risks <textarea id="accRisks" class="input" rows="2" placeholder="Usage drop, exec sponsor left, open P1…"></textarea></label>
+      <label class="lbl">Renewal Date <input id="accRenewal" type="date" class="input"></label>
+      <label class="lbl">Weekly Standup (HH:MM, 24h) <input id="accStandup" class="input" placeholder="09:30"></label>
+      <div class="grid-2 mt-8">
+        <button id="saveProfile" class="btn">Save</button>
+        <button id="clearProfile" class="btn ghost">Clear</button>
+      </div>
+
+      <h3 class="section-title mt-16">Workflows</h3>
+      <div class="stack">
+        <button class="btn ghost w" data-workflow="weekly">Weekly Account Plan</button>
+        <button class="btn ghost w" data-workflow="qbr">QBR Builder</button>
+        <button class="btn ghost w" data-workflow="emails">Client Emails</button>
+        <button class="btn ghost w" data-workflow="churn">Churn Recovery (7‑day)</button>
+        <button class="btn ghost w" data-workflow="execsum">Executive Summary</button>
+      </div>
+
+      <h3 class="section-title mt-16">Auto‑Manager</h3>
+      <div class="stack small">
+        <label class="chk"><input type="checkbox" id="amTasks" checked> Tasks CSV</label>
+        <label class="chk"><input type="checkbox" id="amEmails" checked> Emails (.eml)</label>
+        <label class="chk"><input type="checkbox" id="amICS" checked> Calendar Invite (.ics)</label>
+        <label class="chk"><input type="checkbox" id="amPPTX" checked> QBR Deck (.pptx)</label>
+        <label class="chk"><input type="checkbox" id="amSummary" checked> Exec Summary (.txt)</label>
+      </div>
+      <button id="runAuto" class="btn mt-8">Run Auto‑Manager</button>
+
+      <div class="divider"></div>
+      <div class="grid-2">
+        <button id="clearChat" class="btn ghost">Clear Chat</button>
+        <button id="copyChat" class="btn ghost">Copy Output</button>
+      </div>
+    </aside>
+
+    <section class="panel card">
+      <div id="messages" class="messages"></div>
+      <form id="composer" class="composer">
+        <textarea id="input" class="input" placeholder="Type your prompt…"></textarea>
+        <button id="sendBtn" class="btn" type="submit">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="toast" class="toast">Saved</div>
+</body>
+</html>
