@@ -24,7 +24,7 @@ with sync_playwright() as p:
     page.locator('#downloadReport').click()
   assert csv_info.value.suggested_filename.endswith('.csv')
   # Replacing a valid source with malformed CSV must clear old results.
-  page.locator('#file-po').set_input_files({'name':'broken.csv','mimeType':'text/csv','buffer':b'PO,SKU,Quantity\\nX,"unclosed\\n'})
+  page.locator('#file-po').set_input_files({'name':'broken.csv','mimeType':'text/csv','buffer':b'PO,SKU,Quantity\nX,"unclosed\n'})
   page.locator('#error.visible').wait_for(timeout=5000)
   assert not page.locator('#results').is_visible()
   assert 'Choose a valid CSV' in page.locator('#stat-po').inner_text()
