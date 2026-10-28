@@ -151,7 +151,7 @@
       let s = value == null ? '' : String(value);
       // Spreadsheet programs can evaluate CSV cells beginning with formula operators.
       // Treat external text (PO numbers, SKUs, supplier names, explanations) as data.
-      if (typeof value === 'string' && /^[\\s\\uFEFF]*[=+@-]/.test(s)) s = "'" + s;
+      if (typeof value === 'string' && /^[\s\uFEFF]*[=+@-]/.test(s)) s = "'" + s;
       return /[\",\r\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
     }
     return [columns.map(escape).join(','),...rows.map(r=>columns.map(c=>escape(r[c])).join(','))].join('\r\n');
