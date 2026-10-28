@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const {packet}=require('../packet.js');
+const sample={summary:{flaggedItems:1,reviewItems:0,matchedItems:0},detail:[{po:'PO1',sku:'SKU1',supplier:'<test> & supplier',ordered:5,received:4,billed:5,status:'FLAGGED',riskEstimate:40,currency:'USD',invoices:['INV1']}],issues:[{po:'PO1',sku:'SKU1',type:'BILLED_OVER_RECEIPT',explanation:'Test script <script>alert(1)</script>'}]};
+const output=packet(sample,new Date('2026-10-27T12:00:00Z'));
+assert(output.includes('BILLED OVER RECEIPT'));
+assert(output.includes('&lt;script&gt;'));
+assert(!output.includes('<script>alert'));
+assert(output.includes('PO1'));
+assert(output.includes('2026-10-27'));
+assert.throws(()=>packet(null));
+console.log('PASS packet rendering, date, escaping and input errors');
