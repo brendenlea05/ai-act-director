@@ -14,7 +14,14 @@ function setFile(kind,content,label){
   try{const parsed=E.parseCSV(content);if(parsed.count>250000)throw Error('Limit of 250,000 rows per file to protect browser performance.');
     state[kind]={parsed,mapping:E.guessMapping(parsed.headers,kind),label};$('drop-'+kind).classList.add('loaded');$('stat-'+kind).textContent=`✓ ${parsed.count.toLocaleString()} rows · ${label}`;setError('');
     $('mapping').classList.remove('visible');$('results').classList.remove('visible');state.result=null;
-  }catch(e){setError(`${files[kind]}: ${e.message}`);}
+  }catch(e){
+    // A failed replacement must not leave an earlier CSV silently selected.
+    state[kind]=null;state.result=null;
+    $('drop-'+kind).classList.remove('loaded');
+    $('stat-'+kind).textContent='Choose a valid CSV or drag it here';
+    $('mapping').classList.remove('visible');$('results').classList.remove('visible');
+    setError(`${files[kind]}: ${e.message}`);
+  }
 }
 for(const kind of Object.keys(files)){
   const input=$('file-'+kind),el=$('drop-'+kind);
