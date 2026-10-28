@@ -12,6 +12,14 @@ assert.ok(out.issues.some(i=>i.type==='BILLED_OVER_RECEIPT'));
 assert.ok(out.issues.some(i=>i.type==='PRICE_ABOVE_PO'));
 assert.ok(L.parseCSV('name,desc\n"test, quoted","multi\nline"\n').rows[0].desc.includes('\n'));
 assert.equal(L.stringifyCSV([{a:'x,y'}],['a']),'a\r\n"x,y"');
+assert.equal(L.stringifyCSV([{a:'=1+1'}],['a']),"a\r\n'=1+1");
+assert.equal(L.stringifyCSV([{a:'+SUM(1,2)'}],['a']),"a\r\n\"'+SUM(1,2)\"");
+assert.equal(L.stringifyCSV([{a:'-1+2'}],['a']),"a\r\n'-1+2");
+assert.equal(L.stringifyCSV([{a:'@SUM(1,2)'}],['a']),"a\r\n\"'@SUM(1,2)\"");
+assert.equal(L.stringifyCSV([{a:'\t=1+1'}],['a']),"a\r\n'\t=1+1");
+assert.equal(L.stringifyCSV([{a:'\uFEFF=1+1'}],['a']),"a\r\n'\uFEFF=1+1");
+assert.equal(L.stringifyCSV([{a:-5}],['a']),"a\r\n-5");
+
 assert.throws(()=>L.parseCSV('a,b\n"not closed,b'),/unclosed/);
 assert.throws(()=>L.convert(L.parseCSV('PO,SKU,QTY\na,b,-1'),'receipts',L.guessMapping(['PO','SKU','QTY'],'receipts')),/invalid/);
 const dup=L.reconcile({pos:parse('po','po,sku,qty,price\nX,1,10,10'), receipts:parse('receipts','po,sku,qty\nX,1,10'),invoices:parse('invoices','po,sku,qty,price,invoice\nX,1,5,10,Z\nX,1,5,10,Z')});
