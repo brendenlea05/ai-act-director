@@ -4,10 +4,11 @@ const E=window.LineVerity;
 const state={po:null,receipts:null,invoices:null,result:null};
 const $=id=>document.getElementById(id);
 const files={po:'Purchase orders',receipts:'Goods receipts',invoices:'Invoices'};
+// Fictional example records for demonstration only; not customer data.
 const samples={
-  po:'Purchase Order,SKU,Quantity,Unit Price,Supplier,Currency\nPO-1041,PLANT-SAGO,20,28,Tropical Supplier,USD\nPO-1041,PLANT-PYGMY,10,13,Tropical Supplier,USD\nPO-1042,PLANT-CORDY,30,9,Tropical Supplier,USD\nPO-1043,PLANT-SAGO,6,28,Tropical Supplier,USD\n',
-  receipts:'Purchase Order,SKU,Received Qty\nPO-1041,PLANT-SAGO,18\nPO-1041,PLANT-PYGMY,10\nPO-1042,PLANT-CORDY,30\nPO-1043,PLANT-SAGO,6\n',
-  invoices:'Invoice Number,PO,SKU,Qty,Unit Price,Currency\nBILL-090,PO-1041,PLANT-SAGO,20,31,USD\nBILL-090,PO-1041,PLANT-PYGMY,10,13,USD\nBILL-091,PO-1042,PLANT-CORDY,30,9,USD\nBILL-092,PO-1043,PLANT-SAGO,6,28,USD\nBILL-092,PO-1043,PLANT-SAGO,6,28,USD\n'
+  po:'Purchase Order,SKU,Quantity,Unit Price,Supplier,Currency\nPO-1041,CARTON-12,20,28,Example Supply Co,USD\nPO-1041,LABEL-4X6,10,13,Example Supply Co,USD\nPO-1042,TAPE-CASE,30,9,Example Supply Co,USD\nPO-1043,CARTON-12,6,28,Example Supply Co,USD\n',
+  receipts:'Purchase Order,SKU,Received Qty\nPO-1041,CARTON-12,18\nPO-1041,LABEL-4X6,10\nPO-1042,TAPE-CASE,30\nPO-1043,CARTON-12,6\n',
+  invoices:'Invoice Number,PO,SKU,Qty,Unit Price,Currency\nBILL-090,PO-1041,CARTON-12,20,31,USD\nBILL-090,PO-1041,LABEL-4X6,10,13,USD\nBILL-091,PO-1042,TAPE-CASE,30,9,USD\nBILL-092,PO-1043,CARTON-12,6,28,USD\nBILL-092,PO-1043,CARTON-12,6,28,USD\n'
 };
 function setError(message){$('error').textContent=message;$('error').classList.toggle('visible',Boolean(message));}
 function setFile(kind,content,label){
