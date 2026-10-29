@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://earnest-sprite-f58253.netlify.app/sitemap.xml
