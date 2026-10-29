@@ -56,6 +56,7 @@ $('run').addEventListener('click',()=>{
 });
 const money = (n,currency) => new Intl.NumberFormat('en-US',{style:'currency',currency:currency==='UNSPECIFIED'?'USD':currency||'USD',maximumFractionDigits:2}).format(n);
 function render(result){
+  $('demoIndicator').hidden=!['po','receipts','invoices'].every(kind=>state[kind]?.label==='Demo');
   const s=result.summary;const mixed=s.currencies.length>1;
   $('exposure').textContent=mixed?'Mixed currencies':money(s.estimate,s.currencies[0]||'USD');
   $('flagged').textContent=s.flaggedItems;$('review').textContent=s.reviewItems;$('matched').textContent=s.matchedItems;
