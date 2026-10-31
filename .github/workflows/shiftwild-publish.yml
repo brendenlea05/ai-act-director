@@ -47,6 +47,21 @@ jobs:
           print('SHIFTWILD_TEMPORARY_SITE='+url)
           print('NOTICE: Free anonymous deployment expires in 30 days. Do not treat it as permanent.')
           print('Stripe checkout is external; no payment information is handled by this static site.')
+          import time,urllib.request
+          verified=False
+          for attempt in range(6):
+              try:
+                  with urllib.request.urlopen(url,timeout=20) as result:
+                      served=result.read().decode('utf-8','replace')
+                  if 'SHIFTWILD' in served and 'buy.stripe.com/14AfZa8JUh0636Db017AI02' in served and 'bgUpload' in served:
+                      verified=True
+                      break
+              except Exception as err:
+                  print('Site not yet accessible on attempt '+str(attempt+1)+': '+str(err)[:90])
+              time.sleep(3)
+          if not verified:
+              raise SystemExit('Published URL did not pass an independent GET content check.')
+          print('PUBLIC_SITE_HTTP_VERIFIED=YES')
           with open(__import__('os').environ['GITHUB_STEP_SUMMARY'],'a') as f:
               f.write("## SHIFTWILD storefront published (temporary)\n\n")
               f.write("Live site: "+url+"\n\nFree anonymous link expires after 30 days; permanent hosting still needs account connection.\n")
