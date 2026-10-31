@@ -1,0 +1,53 @@
+name: SHIFTWILD temporary zero-cost deployment
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - 'shiftwild/**'
+      - '.github/workflows/shiftwild-publish.yml'
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: github.head_ref == 'shiftwild-storefront'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout approved project
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Validate and publish commercial static site with no payment card
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s shiftwild/index.html
+          grep -q 'SHIFTWILD' shiftwild/index.html
+          grep -q 'buy.stripe.com/14AfZa8JUh0636Db017AI02' shiftwild/index.html
+          curl --fail --silent --show-error --location --max-time 90 --retry 2 \
+            -X POST 'https://ship.page/deploy' \
+            -H 'Content-Type: text/html' \
+            --data-binary @shiftwild/index.html > /tmp/shiftwild-publish.json
+          python3 - <<'PY'
+          import json,re
+          from urllib.parse import urlparse
+          from pathlib import Path
+          payload=Path('/tmp/shiftwild-publish.json').read_text()
+          try:
+              data=json.loads(payload)
+          except Exception as e:
+              raise SystemExit("No JSON deployment confirmation")
+          url=data.get('url') or data.get('site_url')
+          if not isinstance(url,str):
+              raise SystemExit("Deployment response had no URL")
+          parsed=urlparse(url)
+          if parsed.scheme!='https' or not parsed.hostname or not parsed.hostname.endswith('.ship.place'):
+              raise SystemExit("Deployment URL was not a valid HTTPS ship.place URL")
+          print('SHIFTWILD_TEMPORARY_SITE='+url)
+          print('NOTICE: Free anonymous deployment expires in 30 days. Do not treat it as permanent.')
+          print('Stripe checkout is external; no payment information is handled by this static site.')
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write("## SHIFTWILD storefront published (temporary)\n\n")
+              f.write("Live site: "+url+"\n\nFree anonymous link expires after 30 days; permanent hosting still needs account connection.\n")
+          PY
