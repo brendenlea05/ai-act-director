@@ -53,7 +53,7 @@ jobs:
               try:
                   with urllib.request.urlopen(url,timeout=20) as result:
                       served=result.read().decode('utf-8','replace')
-                  if 'SHIFTWILD' in served and 'buy.stripe.com/14AfZa8JUh0636Db017AI02' in served and 'bgUpload' in served:
+                  if 'SHIFTWILD' in served and 'buy.stripe.com/14AfZa8JUh0636Db017AI02' in served and 'bgFileName' in served:
                       verified=True
                       break
               except Exception as err:
